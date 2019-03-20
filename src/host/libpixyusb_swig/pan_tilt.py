@@ -27,7 +27,11 @@ def setPosition(ch, pos):
 
     pixy_rcs_set_position(ch, pos)
     val = pixy_rcs_get_position(ch)
-    print(val)
+
+    if ch == 0:
+        print("x: {}".format(val))
+    else:
+        print("y: {}".format(val))
 
 # Pixy Python SWIG get blocks example #
 
@@ -40,6 +44,7 @@ pixy_init()
 start_pos_x = 500
 
 pixy_rcs_set_position(0, start_pos_x)
+pixy_rcs_set_position(1, start_pos_x)
 val = pixy_rcs_get_position(1)
 print(val)
 
@@ -49,6 +54,7 @@ print("Use w, a, s, d keys to move.")
 print("Press q to quit.")
 while True:
     char = getch()
+    time.sleep(0.1)
 
     if (char == "q"):
         print("Stop!")
@@ -63,11 +69,11 @@ while True:
         time.sleep(button_delay)
 
     elif (char == "w"):
-        print("Up pressed")
+        setPosition(1, start_pos_x - 50)
         time.sleep(button_delay)
 
     elif (char == "s"):
-        print("Down pressed")
+        setPosition(1, start_pos_x + 50)
         time.sleep(button_delay)
 
     elif (char == "1"):

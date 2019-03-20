@@ -13,6 +13,10 @@
 int pixy_init();
 int pixy_get_blocks(uint16_t max_blocks, BlockArray *blocks);
 void pixy_close();
+int pixy_command(const char *name, ...);
+int pixy_rcs_get_position(uint8_t channel);
+int pixy_rcs_set_position(uint8_t channel, uint16_t position);
+
 
 struct Block
 {

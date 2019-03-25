@@ -1,81 +1,72 @@
 from pixy import *
 from ctypes import *
 
+import curses
 import sys
-import termios
-import tty
-import os
 import time
-
-# https://www.jonwitts.co.uk/archives/896, Jon Witts addapted from
-# https://github.com/recantha/EduKit3-RC-Keyboard/blob/master/rc_keyboard.py
-
-
-def getch():
-    fd = sys.stdin.fileno()
-    old_settings = termios.tcgetattr(fd)
-    try:
-        tty.setraw(sys.stdin.fileno())
-        ch = sys.stdin.read(1)
-
-    finally:
-        termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
-    return ch
 
 
 def setPosition(ch, pos):
 
-    pixy_rcs_set_position(ch, pos)
-    val = pixy_rcs_get_position(ch)
+    # Write position until you get same readback
+    for i in range(0, 10):
+        pixy_rcs_set_position(ch, pos)
+        readback = pixy_rcs_get_position(ch)
 
-    if ch == 0:
-        print("x: {}".format(val))
-    else:
-        print("y: {}".format(val))
+        if readback == pos:
+            if ch == 0:
+                print("\rx: {}".format(readback))
+            else:
+                print("\ry: {}".format(readback))
+            return readback
 
-# Pixy Python SWIG get blocks example #
+    raise Exception("setPosition: timeout reached.")
 
 
-print("Pixy Python SWIG Example -- Pan Tilt")
+if __name__ == "__main__":
 
-# Initialize Pixy Interpreter thread #
-pixy_init()
+    # Initialize Pixy Interpreter thread #
+    pixy_init()
 
-start_pos_x = 500
+    # pixy starting position
+    start_pos = 500
+    pixy_rcs_set_position(0, start_pos)
+    pixy_rcs_set_position(1, start_pos)
+    val = pixy_rcs_get_position(1)
+    print(val)
 
-pixy_rcs_set_position(0, start_pos_x)
-pixy_rcs_set_position(1, start_pos_x)
-val = pixy_rcs_get_position(1)
-print(val)
+    button_delay = 0.5
 
-button_delay = 0.2
+    # init screen
+    screen = curses.initscr()
+    curses.cbreak()
+    screen.keypad(1)
+    key = ''
 
-print("Use w, a, s, d keys to move.")
-print("Press q to quit.")
-while True:
-    char = getch()
-    time.sleep(0.1)
+    try:
+        while key != ord('q'):  # press <Q> to exit the program
 
-    if (char == "q"):
-        print("Stop!")
-        exit(0)
+            time.sleep(button_delay)
 
-    if (char == "a"):
-        setPosition(0, start_pos_x - 50)
-        time.sleep(button_delay)
+            key = screen.getch()  # get the key
+            screen.refresh()
 
-    elif (char == "d"):
-        setPosition(0, start_pos_x + 50)
-        time.sleep(button_delay)
+            # the same, but for <Up> and <Down> keys:
+            if key == curses.KEY_UP:
+                setPosition(1, start_pos - 50)
+            elif key == curses.KEY_DOWN:
+                setPosition(1, start_pos + 50)
+            elif key == curses.KEY_LEFT:
+                setPosition(0, start_pos - 50)
+            elif key == curses.KEY_RIGHT:
+                setPosition(0, start_pos + 50)
+            else:
+                print("\rMove with arrows. Press q to quit.")
 
-    elif (char == "w"):
-        setPosition(1, start_pos_x - 50)
-        time.sleep(button_delay)
+    # catch ctrl+c
+    except KeyboardInterrupt:
+        print("bye")
+        curses.endwin()
+        sys.exit()
 
-    elif (char == "s"):
-        setPosition(1, start_pos_x + 50)
-        time.sleep(button_delay)
-
-    elif (char == "1"):
-        print("Number 1 pressed")
-        time.sleep(button_delay)
+    curses.endwin()

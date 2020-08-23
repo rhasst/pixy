@@ -40,6 +40,7 @@ int main(int argc, char * argv[])
   int      index;
   int      blocks_copied;
   int      pixy_init_status;
+  int      response;
   char     buf[128];
 
   // Catch CTRL+C (SIGINT) signals //
@@ -119,7 +120,7 @@ int main(int argc, char * argv[])
     pixy_command("cam_setAWB", UINT8(0x00), END_OUT_ARGS,  &response, END_IN_ARGS);
   }
 #endif
-
+  /*
   printf("Detecting blocks...\n");
   while(run_flag)
   {
@@ -142,6 +143,16 @@ int main(int argc, char * argv[])
        printf("  %s\n", buf);
     }
     i++;
-  }
+  }*/
+
+  Frame testFrame;
+
+  response = pixy_get_frame(&testFrame);
+  printf("Response: %d\n", response);
+  printf("testFrame.response: %d\n", testFrame.response);
+  printf("testFrame.xwidth: %d\n", testFrame.xwidth);
+  printf("testFrame.ywidth: %d\n", testFrame.ywidth);
+  printf("testFrame.size: %d\n", testFrame.size);
+
   pixy_close();
 }

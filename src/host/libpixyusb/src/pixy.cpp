@@ -454,4 +454,26 @@ extern "C"
 
     return 0;
   }
+
+  int pixy_get_frame(Frame *frame) 
+  {
+
+    int return_value = pixy_command("cam_getFrame",  // String id for remote procedure
+                                    INT8(0x21),     // mode
+                                    INT16(0),        // xoffset
+                                    INT16(0),         // yoffset
+                                    INT16(320),       // width
+                                    INT16(200),       // height
+                                    END_OUT_ARGS,              // separator
+                                    &frame->response,      // pointer to mem address for return value
+                                    &frame->fourccc,
+                                    &frame->renderflags,
+                                    &frame->xwidth,
+                                    &frame->ywidth,
+                                    &frame->size,
+                                    &frame->videodata,        // pointer to mem address for returned frame
+                                    END_IN_ARGS);
+
+    return return_value;
+  }
 }

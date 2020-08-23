@@ -78,6 +78,19 @@ extern "C"
     int16_t  angle;
   };
 
+  struct Frame
+  {
+    uint8_t* videodata;
+    int32_t response;
+    int32_t fourccc;
+    int8_t renderflags;
+    uint16_t xwidth;
+    uint16_t ywidth;
+    uint32_t size;
+  };
+
+  int pixy_get_frame(Frame *frame);
+
   /**
     @brief Creates a connection with Pixy and listens for Pixy messages.
     @return  0                         Success

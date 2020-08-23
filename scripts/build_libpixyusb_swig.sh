@@ -29,6 +29,7 @@ fi
 
 cp pan_tilt.py $PIXY_ROOT/build/$TARGET_BUILD_FOLDER
 cp get_blocks.py $PIXY_ROOT/build/$TARGET_BUILD_FOLDER
+cp get_frame.py $PIXY_ROOT/build/$TARGET_BUILD_FOLDER
 cp pixy.i $PIXY_ROOT/build/$TARGET_BUILD_FOLDER
 cp setup.py $PIXY_ROOT/build/$TARGET_BUILD_FOLDER
 

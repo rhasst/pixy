@@ -455,7 +455,7 @@ extern "C"
     return 0;
   }
 
-  int pixy_get_frame(Frame *frame) 
+  int pixy_get_frame(struct Frame *frame) 
   {
 
     int return_value = pixy_command("cam_getFrame",  // String id for remote procedure
